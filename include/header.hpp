@@ -27,9 +27,11 @@ using std::vector;
 
 class hashMaster{
 public:
+    uint64_t threadNumber;
+    vector <std::thread> allThreads;
+    
     hashMaster(){
         threadNumber = std::thread::hardware_concurrency();
-        cout << "Thread count - " << threadNumber<<endl;
         setThreads();
     }
 
@@ -37,7 +39,6 @@ public:
         threadNumber = number;
         setThreads();
     }
-
 
 
     void setThreads(){
@@ -51,7 +52,6 @@ public:
     }
 
 
-
     static void hashHandler(int a, hashMaster *obj) {
         obj->init_logging();
         while (true){
@@ -63,7 +63,6 @@ public:
             }
             const std::string hash = picosha2::hash256_hex_string(stringForHash);
             if (hash.find("0000", 60) == 60){
-                //cout<<"DONE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;
                 BOOST_LOG_TRIVIAL(info) << stringForHash << " - " << hash << " - " << threadID << endl;
                 break;
             }
@@ -90,10 +89,6 @@ public:
         logging::add_common_attributes();
 
     }
-
-public:
-    uint64_t threadNumber;
-    vector <std::thread> allThreads;
 };
 
 #endif // INCLUDE_HEADER_HPP_
